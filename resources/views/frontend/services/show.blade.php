@@ -127,10 +127,7 @@
 
             <div class="col-xl-6 col-lg-5 col-md-12 col-12">
                 <div class="tp-breadcrumb__link serv-md d-flex text-white">
-                    <span>
-                        Matcon Systems :
-                        <a href="{{ route('services.show', $service->slug) }}"> {{ $service->title }}</a>
-                    </span>
+                    <span><a href="{{ route('services.index') }}"> Services</a></span>
                 </div>
             </div>
 

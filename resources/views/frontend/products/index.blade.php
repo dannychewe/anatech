@@ -116,7 +116,7 @@
             </div>
             <div class="col-xl-5 col-lg-12 col-md-12 col-12">
                 <div class="tp-breadcrumb__link text-xl-end">
-                    <span>Anatech : <a href="{{ route('products.index') }}"> Shop</a></span>
+                    <span><a href="{{ url('/') }}"> Home</a></span>
                 </div>
             </div>
         </div>

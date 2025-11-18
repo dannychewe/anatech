@@ -129,7 +129,7 @@
             </div>
             <div class="col-xl-5">
                 <div class="tp-breadcrumb__link text-xl-end">
-                    <span>Home : <a href="{{ route('about') }}"> About Us</a></span>
+                    <span><a href="{{ url('/') }}"> Home</a></span>
                 </div>
             </div>
         </div>

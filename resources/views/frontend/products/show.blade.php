@@ -126,7 +126,7 @@
 
             <div class="col-xl-5 col-lg-12 col-md-12 col-12">
                 <div class="tp-breadcrumb__link text-xl-end">
-                    <span>Matcon : <a href="{{ route('products.index') }}"> Products</a></span>
+                    <span><a href="{{ route('products.index') }}"> Products</a></span>
                 </div>
             </div>
 

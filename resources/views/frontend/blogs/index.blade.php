@@ -102,7 +102,7 @@
             </div>
             <div class="col-lg-6 col-md-5">
                 <div class="tp-breadcrumb__link d-flex align-items-center">
-                    <span>Home : <a href="{{ route('blogs.index') }}">Blogs</a></span>
+                    <span><a href="{{ url('/') }}"> Home</a></span>
                 </div>
             </div>
         </div>
