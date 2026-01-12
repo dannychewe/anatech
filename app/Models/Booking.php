@@ -19,6 +19,7 @@ class Booking extends Model
         'quantity',
         'price_per_unit',   // <-- Added
         'total_price',      // <-- Added
+        'currency',
         'start_date',
         'end_date',
         'notes',

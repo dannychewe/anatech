@@ -3,6 +3,9 @@
 @section('content')
 <div class="container-fluid">
     <h1 class="mb-4">Bookings</h1>
+    @php
+        $exportQuery = request()->only(['status', 'date']);
+    @endphp
 
     {{-- Filters --}}
     <form method="GET" class="row g-3 mb-3">
@@ -22,8 +25,8 @@
             <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div class="col-md-2 ms-auto text-end">
-            <a href="{{ route('admin.bookings.export.csv') }}" class="btn btn-outline-success">Export CSV</a>
-<a href="{{ route('admin.bookings.export.pdf') }}" class="btn btn-outline-danger">Export PDF</a>
+            <a href="{{ route('admin.bookings.export.csv', $exportQuery) }}" class="btn btn-outline-success">Export CSV</a>
+            <a href="{{ route('admin.bookings.export.pdf', $exportQuery) }}" class="btn btn-outline-danger">Export PDF</a>
 
         </div>
     </form>
@@ -40,6 +43,7 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Status</th>
+                    <th>Total</th>
                     <th>Linked To</th>
                     <th>Actions</th>
                 </tr>
@@ -54,6 +58,7 @@
                     <td>{{ $booking->start_date }}</td>
                     <td>{{ $booking->end_date }}</td>
                     <td><span class="badge bg-info">{{ $booking->status }}</span></td>
+                    <td>{{ $booking->currency ?? 'USD' }} {{ number_format((float) $booking->total_price, 2) }}</td>
                     <td>
                         @if($booking->product)
                             Product: {{ $booking->product->name }}
@@ -69,7 +74,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="9" class="text-center">No bookings found</td>
+                    <td colspan="10" class="text-center">No bookings found</td>
                 </tr>
                 @endforelse
             </tbody>

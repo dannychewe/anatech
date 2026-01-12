@@ -66,11 +66,15 @@ class BookingController extends Controller
 
     // Price (nullable is fine)
     $pricePerUnit = 0;
+    $currency = 'USD';
     if ($request->filled('service_id')) {
-        $pricePerUnit = optional(Service::find($request->service_id))->price ?? 0;
+        $service = Service::find($request->service_id);
+        $pricePerUnit = $service->price ?? 0;
     }
     if ($request->filled('product_id')) {
-        $pricePerUnit = optional(Product::find($request->product_id))->price ?? 0;
+        $product = Product::find($request->product_id);
+        $pricePerUnit = $product->price ?? 0;
+        $currency = $product->currency ?? 'USD';
     }
 
     // Totals
@@ -93,6 +97,7 @@ class BookingController extends Controller
         'quantity'       => $quantity,
         'price_per_unit' => $pricePerUnit,
         'total_price'    => $totalPrice,
+        'currency'       => $currency,
         'start_date'     => $isService ? $request->start_date : null,
         'end_date'       => $isService ? $request->end_date   : null,
         'notes'          => $request->notes,
@@ -121,17 +126,9 @@ class BookingController extends Controller
         $warnings[] = "Couldn't send your confirmation email.";
     }
 
-    // Redirect back to detail page where possible
-    $redirectTo = url()->previous();
-    if ($booking->service_id && ($svc = Service::find($booking->service_id))) {
-        $redirectTo = route('services.show', $svc->slug);
-    } elseif ($booking->product_id && ($prod = Product::find($booking->product_id))) {
-        if (\Illuminate\Support\Facades\Route::has('products.show')) {
-            $redirectTo = route('products.show', $prod->slug);
-        }
-    }
+    $receiptUrl = \Illuminate\Support\Facades\URL::signedRoute('frontend.bookings.receipt', $booking->id);
 
-    return redirect($redirectTo)
+    return redirect($receiptUrl)
         ->with('success', 'Booking successfully submitted!')
         ->with($warnings ? ['warning' => implode(' ', array_unique($warnings))] : []);
 }
@@ -139,5 +136,11 @@ class BookingController extends Controller
     public function success()
     {
         return view('frontend.bookings.success');
+    }
+
+    public function receipt(Booking $booking)
+    {
+        $booking->load(['product', 'service']);
+        return view('frontend.bookings.receipt', compact('booking'));
     }
 }

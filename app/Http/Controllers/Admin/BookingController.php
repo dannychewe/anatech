@@ -7,13 +7,11 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingStatusUpdated;
-use Maatwebsite\Excel\Facades\Excel; // if using Laravel Excel
 use Barryvdh\DomPDF\Facade\Pdf; // if using barryvdh/laravel-dompdf
 
 class BookingController extends Controller
 {
-    // Bookings list with filters
-    public function index(Request $request)
+    private function applyFilters(Request $request)
     {
         $status = $request->get('status');
         $date = $request->get('date');
@@ -24,11 +22,27 @@ class BookingController extends Controller
             $query->where('status', $status);
         }
         if ($date) {
-            $query->whereDate('start_date', '<=', $date)
-                  ->whereDate('end_date', '>=', $date);
+            $query->where(function ($q) use ($date) {
+                $q->where(function ($qq) use ($date) {
+                    $qq->whereDate('start_date', '<=', $date)
+                       ->whereDate('end_date', '>=', $date);
+                })->orWhere(function ($qq) use ($date) {
+                    $qq->whereNull('start_date')
+                       ->whereNull('end_date')
+                       ->whereDate('created_at', $date);
+                });
+            });
         }
 
-        $bookings = $query->paginate(20);
+        return $query;
+    }
+
+    // Bookings list with filters
+    public function index(Request $request)
+    {
+        $status = $request->get('status');
+        $date = $request->get('date');
+        $bookings = $this->applyFilters($request)->paginate(20);
 
         return view('admin.bookings.index', compact('bookings', 'status', 'date'));
     }
@@ -52,7 +66,13 @@ class BookingController extends Controller
         $booking->save();
 
         if ($request->has('notify') && $request->notify) {
-            Mail::to($booking->customer_email)->send(new BookingStatusUpdated($booking));
+            try {
+                Mail::to($booking->customer_email)->send(new BookingStatusUpdated($booking));
+            } catch (\Throwable $e) {
+                report($e);
+                return redirect()->route('admin.bookings.show', $booking->id)
+                                 ->with('warning', "Status updated, but email couldn't be sent.");
+            }
         }
 
         return redirect()->route('admin.bookings.show', $booking->id)
@@ -60,25 +80,42 @@ class BookingController extends Controller
     }
 
     // Export Bookings (CSV)
-    public function exportCsv()
+    public function exportCsv(Request $request)
     {
-        $bookings = Booking::with(['product', 'service'])->get();
+        $bookings = $this->applyFilters($request)->get();
 
-        $csv = "ID,Customer,Email,Phone,Start Date,End Date,Status,Product/Service\n";
-        foreach ($bookings as $b) {
-            $linkedItem = $b->product ? $b->product->name : ($b->service ? $b->service->title : 'N/A');
-            $csv .= "{$b->id},{$b->customer_name},{$b->customer_email},{$b->customer_phone},{$b->start_date},{$b->end_date},{$b->status},{$linkedItem}\n";
-        }
+        return response()->streamDownload(function () use ($bookings) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [
+                'ID', 'Customer', 'Email', 'Phone', 'Start Date', 'End Date',
+                'Status', 'Currency', 'Price/Unit', 'Total', 'Product/Service'
+            ]);
 
-        return response($csv)
-            ->header('Content-Type', 'text/csv')
-            ->header('Content-Disposition', 'attachment; filename="bookings.csv"');
+            foreach ($bookings as $b) {
+                $linkedItem = $b->product ? $b->product->name : ($b->service ? $b->service->title : 'N/A');
+                fputcsv($handle, [
+                    $b->id,
+                    $b->customer_name,
+                    $b->customer_email,
+                    $b->customer_phone,
+                    $b->start_date,
+                    $b->end_date,
+                    $b->status,
+                    $b->currency ?? 'USD',
+                    $b->price_per_unit,
+                    $b->total_price,
+                    $linkedItem,
+                ]);
+            }
+
+            fclose($handle);
+        }, 'bookings.csv', ['Content-Type' => 'text/csv']);
     }
 
     // Export Bookings (PDF)
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        $bookings = Booking::with(['product', 'service'])->get();
+        $bookings = $this->applyFilters($request)->get();
         $pdf = Pdf::loadView('admin.bookings.export-pdf', compact('bookings'));
         return $pdf->download('bookings.pdf');
     }

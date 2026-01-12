@@ -14,6 +14,11 @@
         @csrf
         @method('PUT')
 
+        @php
+            $iconImage = $service->icon ? asset('storage/'.$service->icon) : '';
+            $serviceImage = $service->image ? asset('storage/'.$service->image) : '';
+        @endphp
+
         <div class="mb-3">
             <label class="form-label">Title</label>
             <input type="text" name="title" class="form-control" value="{{ old('title', $service->title) }}" required>
@@ -40,19 +45,11 @@
 
         <div class="mb-3">
             <label class="form-label">Service Icon</label>
-            <input type="file" name="icon" class="form-control">
-            @if($service->icon)
-                <p class="mt-2">
-                    <img src="{{ asset('storage/'.$service->icon) }}" alt="Service Icon" width="120">
-                </p>
-            @endif
+            <input type="file" name="icon" class="form-control" data-existing-images="{{ $iconImage }}">
         </div>
         <div class="mb-3">
             <label for="image" class="form-label">Service Image</label>
-            <input type="file" name="image" class="form-control" accept="image/*">
-            @if(isset($service) && $service->image)
-                <img src="{{ asset('storage/'.$service->image) }}" class="mt-2" height="100">
-            @endif
+            <input type="file" name="image" class="form-control" accept="image/*" data-existing-images="{{ $serviceImage }}">
         </div>
 
         <div class="form-check mb-3">

@@ -12,6 +12,10 @@
         @csrf
         @method('PUT')
 
+        @php
+            $heroImage = !empty($hero->background_image) ? asset('storage/'.$hero->background_image) : '';
+        @endphp
+
         <div class="mb-3">
             <label class="form-label">Title</label>
             <input type="text" name="title" class="form-control" value="{{ old('title', $hero->title ?? '') }}">
@@ -34,12 +38,7 @@
 
         <div class="mb-3">
             <label class="form-label">Background Image</label>
-            <input type="file" name="background_image" class="form-control">
-            @if(!empty($hero->background_image))
-                <p class="mt-2">
-                    <img src="{{ asset('storage/'.$hero->background_image) }}" alt="Hero" width="150">
-                </p>
-            @endif
+            <input type="file" name="background_image" class="form-control" data-existing-images="{{ $heroImage }}">
         </div>
 
         <h4>SEO</h4>

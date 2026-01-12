@@ -3,10 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\ContactController;
@@ -16,24 +16,17 @@ use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\HeroController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\NewsletterAdminController;
+use App\Http\Controllers\Admin\BrandController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::resource('products', ProductController::class);
-
-
-// PRODUCT CATEGORIES
-Route::prefix('product_categories')->name('product_categories.')->group(function () {
-
-    Route::get('/',         [ProductCategoryController::class, 'index'])->name('index');
-    Route::get('/create',   [ProductCategoryController::class, 'create'])->name('create');
-    Route::post('/',        [ProductCategoryController::class, 'store'])->name('store');
-    Route::get('/{category}/edit', [ProductCategoryController::class, 'edit'])->name('edit');
-    Route::put('/{category}',      [ProductCategoryController::class, 'update'])->name('update');
-    Route::delete('/{category}',   [ProductCategoryController::class, 'destroy'])->name('destroy');
-
-});
-
+Route::delete('products/{product}/images/{image}', [ProductController::class, 'destroyImage'])
+    ->name('products.images.destroy');
+Route::put('products/{product}/images/reorder', [ProductController::class, 'reorderImages'])
+    ->name('products.images.reorder');
+Route::resource('product-categories', ProductCategoryController::class)
+    ->parameters(['product-categories' => 'productCategory']);
 
 Route::resource('services', ServiceController::class);
 
@@ -71,6 +64,9 @@ Route::resource('team-members', \App\Http\Controllers\Admin\TeamMemberController
 
 
 Route::resource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class);
+
+
+Route::resource('brands', BrandController::class);
 
 
 Route::prefix('bookings')->group(function () {

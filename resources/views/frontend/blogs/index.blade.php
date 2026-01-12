@@ -100,11 +100,11 @@
                     <h2 class="tp-breadcrumb__title">Blogs</h2>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-5">
+            <!-- <div class="col-lg-6 col-md-5">
                 <div class="tp-breadcrumb__link d-flex align-items-center">
                     <span><a href="{{ url('/') }}"> Home</a></span>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </section>

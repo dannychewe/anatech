@@ -37,27 +37,18 @@
                <div class="col-lg-3 col-md-6">
                   <div class="tp-footer-widget footer-2-col-2 mb-40 wow fadeInUp" data-wow-delay=".4s">
 
-                     <span class="tp-footer-widget__title mb-15">Useful Links</span>
+                     @php
+                        $productCategories = \App\Models\ProductCategory::all();
+                     @endphp
+
+                     <span class="tp-footer-widget__title mb-15">Our Products</span>
 
                      <div class="tp-footer-widget__links mb-35">
                         <ul>
-                           <li><a href="{{ url('/contact-us') }}">Contact Us</a></li>
-                           <li><a href="{{ url('/about-us') }}">About Us</a></li>
-                           <li><a href="{{ url('/services') }}">Our Services</a></li>
-                           <li><a href="{{ url('/products') }}">Products</a></li>
-                           <li><a href="{{ url('/blogs') }}">Blog</a></li>
+                           @foreach($productCategories as $category)
+                              <li><a href="{{ route('product-categories.show', $category->slug) }}">{{ $category->name }}</a></li>
+                           @endforeach
                         </ul>
-                     </div>
-
-                     <div class="tp-footer-widget__sub-sec">
-                        <span class="tp-footer-widget__sub-title mb-10">Opening Hours</span>
-                        <div class="tp-footer-widget__list">
-                           <ul>
-                              <li>Mon - Fri: 8:00 AM - 5:00 PM</li>
-                              <li>Sat: 9:00 AM - 1:00 PM</li>
-                              <li>Sunday: Closed</li>
-                           </ul>
-                        </div>
                      </div>
 
                   </div>
@@ -67,15 +58,17 @@
                <div class="col-lg-2 col-md-6">
                   <div class="tp-footer-widget footer-2-col-3 mb-40 wow fadeInUp" data-wow-delay=".6s">
 
-                     <span class="tp-footer-widget__title mb-15">Quick Access</span>
+                     @php
+                        $services = \App\Models\Service::all();
+                     @endphp
+
+                     <span class="tp-footer-widget__title mb-15">Our Services</span>
 
                      <div class="tp-footer-widget__links">
                         <ul>
-                           <li><a href="{{ url('/') }}">Home</a></li>
-                           <li><a href="{{ url('/about-us') }}">About</a></li>
-                           <li><a href="{{ url('/services') }}">Services</a></li>
-                           <li><a href="{{ url('/products') }}">Products</a></li>
-                           <li><a href="{{ url('/contact-us') }}">Contact</a></li>
+                           @foreach($services as $service)
+                              <li><a href="{{ route('services.show', $service->slug) }}">{{ $service->title }}</a></li>
+                           @endforeach
                         </ul>
                      </div>
 

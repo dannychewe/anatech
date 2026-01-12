@@ -14,6 +14,10 @@
         @csrf
         @method('PUT')
 
+        @php
+            $featuredImage = $blog->featured_image ? asset('storage/'.$blog->featured_image) : '';
+        @endphp
+
         <div class="mb-3">
             <label class="form-label">Title</label>
             <input type="text" name="title" class="form-control" value="{{ old('title', $blog->title) }}" required>
@@ -39,12 +43,7 @@
 
         <div class="mb-3">
             <label class="form-label">Featured Image</label>
-            <input type="file" name="featured_image" class="form-control">
-            @if($blog->featured_image)
-                <p class="mt-2">
-                    <img src="{{ asset('storage/'.$blog->featured_image) }}" alt="Featured" width="120">
-                </p>
-            @endif
+            <input type="file" name="featured_image" class="form-control" data-existing-images="{{ $featuredImage }}">
         </div>
 
         <div class="mb-3">

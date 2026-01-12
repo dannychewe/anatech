@@ -13,6 +13,7 @@
         <thead class="table-light">
             <tr>
                 <th>Name</th>
+                <th>Category</th>
                 <th>Price</th>
                 <th>Slug</th>
                 <th width="200">Actions</th>
@@ -22,6 +23,7 @@
             @forelse($products as $product)
                 <tr>
                     <td>{{ $product->name }}</td>
+                    <td>{{ optional($product->category)->name ?? '—' }}</td>
                     <td>{{ $product->price }}</td>
                     <td>{{ $product->slug }}</td>
                     <td>
@@ -35,7 +37,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="4" class="text-center">No products found</td></tr>
+                <tr><td colspan="5" class="text-center">No products found</td></tr>
             @endforelse
         </tbody>
     </table>

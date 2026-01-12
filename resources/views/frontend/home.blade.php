@@ -415,90 +415,111 @@
                <div class="brand-border pt-60 pb-60">
                   <div class="swiper-container brand-active">
                      <div class="swiper-wrapper brand-items">
+                        @forelse($brands as $brand)
                         <div class="swiper-slide">
-                           <a href="#"><img src="assets/img/brand/brand-01.png" alt="brand"></a>
+                           <a href="{{ $brand->website_url ?: '#' }}" target="{{ $brand->website_url ? '_blank' : '' }}">
+                              <img src="{{ $brand->logo ? (str_starts_with($brand->logo, 'assets/') ? asset($brand->logo) : asset('storage/'.$brand->logo)) : asset('assets/img/brand/brand-default.png') }}" alt="{{ $brand->name }}" class="brand-logo">
+                           </a>
+                        </div>
+                        @empty
+                        <div class="swiper-slide">
+                           <a href="#"><img src="assets/img/brand/brand-01.png" alt="brand" class="brand-logo"></a>
                         </div>
                         <div class="swiper-slide">
-                           <a href="#"><img src="assets/img/brand/brand-02.png" alt="brand"></a>
+                           <a href="#"><img src="assets/img/brand/brand-02.png" alt="brand" class="brand-logo"></a>
                         </div>
                         <div class="swiper-slide">
-                           <a href="#"><img src="assets/img/brand/brand-03.png" alt="brand"></a>
+                           <a href="#"><img src="assets/img/brand/brand-03.png" alt="brand" class="brand-logo"></a>
                         </div>
                         <div class="swiper-slide">
-                           <a href="#"><img src="assets/img/brand/brand-04.png" alt="brand"></a>
+                           <a href="#"><img src="assets/img/brand/brand-04.png" alt="brand" class="brand-logo"></a>
                         </div>
                         <div class="swiper-slide">
-                           <a href="#"><img src="assets/img/brand/brand-05.png" alt="brand"></a>
+                           <a href="#"><img src="assets/img/brand/brand-05.png" alt="brand" class="brand-logo"></a>
                         </div>
-                        <div class="swiper-slide">
-                           <a href="#"><img src="assets/img/brand/brand-04.png" alt="brand"></a>
-                        </div>
+                        @endforelse
                      </div>
                   </div>
                </div>
             </div>
          </div>
          <!-- brand-area-end -->     
-<!-- {{-- Products --}}
-<section class="cs_pb_135 cs_pb_lg_75">
-  <div class="container">
-    <div class="cs_section_heading cs_style_1 d-flex align-items-center cs_mb_60 cs_mb_lg_40 cs_column_gap_15 cs_row_gap_15">
-      <div class="cs_section_heading_in">
-        <h3 class="cs_fs_20 cs_fs_lg_18 text-accent fw-normal cs_lh_base cs_mb_10">Mobile Toilets & Sanitation Solutions</h3>
-        <h2 class="cs_fs_48 cs_fs_lg_36 m-0">Sanitation Solutions</h2>
-      </div>
-      <div class="cs_section_heading_right">
-        <div class="text-end">
-          <a href="{{ url('/products') }}" class="cs_btn cs_style_1 cs_fs_16 cs_rounded_5 cs_pl_30 cs_pr_30 cs_pt_10 cs_pb_10 overflow-hidden"><span>View More</span></a>
-        </div>
-      </div>
-    </div>
-
-    <div class="cs_product_slider cs_gap_24">
-      <div class="cs_slider_activate">
-        @forelse($featuredProducts as $product)
-          <div class="cs_slide">
-            <div class="cs_product_card cs_style_1">
-              <div class="cs_product_thumb">
-                <img 
-                  src="{{ $product->image ? asset('storage/'.$product->image) : asset('assets/img/product_default.jpeg') }}"
-                  alt="{{ $product->title ?? $product->name ?? 'Product' }}"
-                  style="width:100%; height:250px; object-fit:cover; border-radius:8px;"
-                >
-
-                <div class="cs_product_overlay"></div>
-                <div class="cs_card_btns">
-                  <a href="{{ route('products.show', $product->slug) }}"><i class="fa-solid fa-link" aria-hidden="true"></i></a>
+<!-- Products -->
+<section class="product-categories-area pt-120 pb-120">
+    <div class="container">
+        <div class="row align-items-end mb-50">
+            <div class="col-lg-8">
+                <div class="tp-section">
+                    <span class="tp-section__sub-title left-line mb-15">Product Categories</span>
+                    <h3 class="tp-section__title">Explore Laboratory & Industrial Solutions</h3>
+                    <p class="text-muted mb-0">
+                        Browse curated categories from instrumentation to consumables, all backed by Anatech's expert procurement and support.
+                    </p>
                 </div>
-              </div>
-              <div class="cs_product_info">
-                <h2 class="cs_product_title">
-                  <a href="{{ route('products.show', $product->slug) }}">
-                    {{ $product->title ?? $product->name ?? 'Untitled Product' }}
-                  </a>
-                </h2>
-                <p class="cs_product_price">
-                  @php $price = $product->price ?? null; @endphp
-                  Price: {{ $price !== null ? ('$'.number_format((float)$price, 2)) : 'Contact' }}
-                </p>
-              </div>
             </div>
-          </div>
-        @empty
-          <div class="cs_slide">
-            <div class="cs_product_card cs_style_1">
-              <div class="cs_product_info p-4">
-                <h2 class="cs_product_title m-0">No featured products yet.</h2>
-              </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <a href="{{ url('/product-categories') }}" class="tp-btn tp-btn-sm">
+                    View All Categories <i class="fa-solid fa-arrow-right ms-2"></i>
+                </a>
             </div>
-          </div>
-        @endforelse
-      </div>
-    </div>
+        </div>
 
-  </div>
+        <div class="row g-4">
+            @forelse($productCategories as $index => $category)
+                <div class="col-lg-4 col-md-6">
+                    <article class="product-card wow fadeInUp" data-wow-delay=".{{ 2 + ($index % 3) * 2 }}s">
+                        <div class="product-card__thumb">
+                            <a href="{{ route('product-categories.show', $category->slug) }}">
+                                <img
+                                    src="{{ $category->image ? asset('storage/'.$category->image) : asset('assets/img/default-category.jpg') }}"
+                                    alt="{{ $category->name }}">
+                            </a>
+                        </div>
+                        <div class="product-card__body">
+                            <h4 class="product-card__title">
+                                <a href="{{ route('product-categories.show', $category->slug) }}">
+                                    {{ $category->name }}
+                                </a>
+                            </h4>
+                            <p class="product-card__description">
+                                {{ \Illuminate\Support\Str::limit(strip_tags($category->description ?? 'Explore our range of products in this category.'), 90) }}
+                            </p>
+                            <div class="product-card__meta">
+                                <span>
+                                {{ $category->products_count ?? 0 }} {{ \Illuminate\Support\Str::plural('product', $category->products_count ?? 0) }}
+                                </span>
+                                <span>
+                                    @if(!empty($category->industry_focus))
+                                        {{ $category->industry_focus }}
+                                    @else
+                                        Laboratory equipment
+                                    @endif
+                                </span>
+                            </div>
+                            <div class="product-card__footer">
+                                <span class="product-card__price">
+                                    {{ $category->products_count ?? 0 }} items
+                                </span>
+                                <a href="{{ route('product-categories.show', $category->slug) }}" class="tp-btn tp-btn-sm">
+                                    View Products
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="tpshopitem mb-50 text-center">
+                        <p class="text-muted">No categories available right now. Check back soon.</p>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+    </div>
 </section>
-{{-- End Products --}} -->
+<!-- End Products -->
+
+@include('frontend.partials.product-card-styles')
 
 @if(!empty($testimonials) && count($testimonials))
 <!-- testimonial-area -->
@@ -621,10 +642,10 @@
                                  <i class="fa-light fa-clock"></i>
                                  {{ $blog->created_at->format('M d, Y') }}
                               </li>
-                              <li>
+                              <!-- <li>
                                  <i class="fa-light fa-eye"></i>
                                  {{ $blog->views ?? '1,000+' }} views
-                              </li>
+                              </li> -->
                            </ul>
                         </div>
                      </div>
@@ -714,3 +735,37 @@
 <!-- newsletter-area-end -->
 
 @endsection
+
+@push('styles')
+<style>
+.brand-logo {
+    width: 120px;
+    height: 60px;
+    object-fit: contain;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.brand-logo:hover {
+    filter: grayscale(0%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .brand-logo {
+        width: 100px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-logo {
+        width: 80px;
+        height: 40px;
+    }
+}
+</style>
+@endpush

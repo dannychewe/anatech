@@ -7,9 +7,20 @@ use App\Models\Contact;
 
 class ContactController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $contacts = Contact::latest()->paginate(10);
+        $q = $request->get('q');
+
+        $query = Contact::latest();
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->where('name', 'like', "%{$q}%")
+                   ->orWhere('email', 'like', "%{$q}%")
+                   ->orWhere('subject', 'like', "%{$q}%");
+            });
+        }
+
+        $contacts = $query->paginate(10)->appends($request->only('q'));
         return view('admin.contacts.index', compact('contacts'));
     }
 

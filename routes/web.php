@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Frontend\ProductCategoryController;
 use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\EventController;
@@ -35,6 +36,8 @@ Route::get('/podcasts/{slug}', [PodcastController::class, 'show'])->name('podcas
 // Products
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/product-categories', [ProductCategoryController::class, 'index'])->name('product-categories.index');
+Route::get('/product-categories/{slug}', [ProductCategoryController::class, 'show'])->name('product-categories.show');
 
 // Services
 Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
@@ -58,6 +61,9 @@ Route::get('/testimonials', [TestimonialController::class, 'index'])->name('test
 
 
 Route::post('/booking', [BookingController::class, 'store'])->name('frontend.booking.store');
+Route::get('/booking/receipt/{booking}', [BookingController::class, 'receipt'])
+    ->name('frontend.bookings.receipt')
+    ->middleware('signed');
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/newsletter/confirm/{id}', [NewsletterController::class, 'confirm'])->name('newsletter.confirm');

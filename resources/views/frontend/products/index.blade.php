@@ -19,8 +19,8 @@
 {{-- ===================================================== --}}
 {{-- PAGE META (ANATECH)                                   --}}
 {{-- ===================================================== --}}
-@section('meta_title', 'Products | Anatech Zambia – Laboratory & Industrial Equipment')
-@section('meta_description', 'Browse high-quality laboratory equipment, scientific instruments, chemicals, consumables, and industrial supplies from Anatech Zambia.')
+@section('meta_title', 'Product Categories | Anatech Zambia – Laboratory & Industrial Equipment')
+@section('meta_description', 'Browse our product categories including laboratory equipment, scientific instruments, chemicals, consumables, and industrial supplies from Anatech Zambia.')
 @section('meta_keywords', 'Anatech, laboratory equipment Zambia, scientific instruments, lab consumables, industrial supplies, chemicals, reagents, calibration services')
 @section('canonical', $canonical)
 @section('og_type', 'website')
@@ -36,34 +36,28 @@
   $itemList = [
     '@context'         => 'https://schema.org',
     '@type'            => 'ItemList',
-    'name'             => 'Anatech Product Catalogue',
+    'name'             => 'Anatech Product Categories',
     'itemListOrder'    => 'https://schema.org/ItemListOrderAscending',
-    'numberOfItems'    => $products->count(),
+    'numberOfItems'    => $categories->count(),
     'itemListElement'  => [],
   ];
 
-  $position = $products->firstItem() ?? 1;
+  $position = $categories->firstItem() ?? 1;
 
-  foreach ($products as $p) {
-      $img = $p->image
-          ? asset('storage/'.$p->image)
+  foreach ($categories as $c) {
+      $img = $c->image
+          ? asset('storage/'.$c->image)
           : $listingImage;
 
       $itemList['itemListElement'][] = [
           '@type'    => 'ListItem',
           'position' => $position++,
           'item'     => [
-              '@type'  => 'Product',
-              'name'   => $p->name,
+              '@type'  => 'Thing',
+              'name'   => $c->name,
               'image'  => [$img],
-              'url'    => route('products.show', $p->slug),
-              'description' => \Illuminate\Support\Str::limit(strip_tags($p->description ?? ''), 160),
-              'offers' => [
-                  '@type'         => 'Offer',
-                  'price'         => $p->price ?? '0',
-                  'priceCurrency' => 'ZMW',
-                  'availability'  => 'https://schema.org/InStock',
-              ],
+              'url'    => route('product-categories.show', $c->slug),
+              'description' => \Illuminate\Support\Str::limit(strip_tags($c->description ?? ''), 160),
           ],
       ];
   }
@@ -114,11 +108,11 @@
                     <h2 class="tp-breadcrumb__title">Our Products</h2>
                 </div>
             </div>
-            <div class="col-xl-5 col-lg-12 col-md-12 col-12">
+            <!-- <div class="col-xl-5 col-lg-12 col-md-12 col-12">
                 <div class="tp-breadcrumb__link text-xl-end">
                     <span><a href="{{ url('/') }}"> Home</a></span>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </section>
@@ -134,8 +128,8 @@
             <div class="col-md-6">
                 <div class="tpproduct">
                     <span>
-                        Showing {{ $products->firstItem() }} - {{ $products->lastItem() }} 
-                        of {{ $products->total() }} results
+                        Showing {{ $categories->firstItem() }} - {{ $categories->lastItem() }} 
+                        of {{ $categories->total() }} results
                     </span>
                 </div>
             </div>
@@ -155,32 +149,28 @@
 
         <div class="row">
 
-            @forelse($products as $product)
+            @forelse($categories as $category)
                 <div class="col-xl-3 col-lg-4 col-md-4">
                     <div class="tpshopitem mb-50 wow fadeInUp" data-wow-delay=".2s">
 
-                        {{-- Product Image --}}
+                        {{-- Category Image --}}
                         <div class="tpshopitem__thumb p-relative fix mb-35">
-                            <a href="{{ route('products.show', $product->slug) }}">
+                            <a href="{{ route('product-categories.show', $category->slug) }}">
                                 <img 
-                                    src="{{ $product->image ? asset('storage/'.$product->image) : asset('assets/img/default-product.jpg') }}" 
-                                    alt="{{ $product->name }}">
+                                    src="{{ $category->image ? asset('storage/'.$category->image) : asset('assets/img/default-category.jpg') }}" 
+                                    alt="{{ $category->name }}">
                             </a>
                         </div>
 
-                        {{-- Product Info --}}
+                        {{-- Category Info --}}
                         <div class="tpshopitem__content text-center">
                             <span class="tpshopitem__title mb-5">
-                                <a href="{{ route('products.show', $product->slug) }}">
-                                    {{ $product->name }}
+                                <a href="{{ route('product-categories.show', $category->slug) }}">
+                                    {{ $category->name }}
                                 </a>
                             </span>
 
-                            @if($product->price)
-                                <p>${{ number_format($product->price, 2) }}</p>
-                            @else
-                                <p class="text-muted">Contact for price</p>
-                            @endif
+                            <p>{{ $category->products_count ?? 0 }} products</p>
                         </div>
 
                     </div>
@@ -188,11 +178,11 @@
 
             @empty
                 <div class="col-12 text-center">
-                    <p class="text-muted">No products found.</p>
+                    <p class="text-muted">No categories found.</p>
                 </div>
             @endforelse
 
-            @if ($products->hasPages())
+            @if ($categories->hasPages())
     <div class="row">
         <div class="col-12">
             <div class="basic-pagination text-center mt-15">
@@ -200,21 +190,21 @@
                     <ul class="pagination-list d-flex justify-content-center">
 
                         {{-- PREVIOUS --}}
-                        @if ($products->onFirstPage())
+                        @if ($categories->onFirstPage())
                             <li class="disabled">
                                 <span><i class="fa-light fa-arrow-left-long"></i></span>
                             </li>
                         @else
                             <li>
-                                <a href="{{ $products->previousPageUrl() }}">
+                                <a href="{{ $categories->previousPageUrl() }}">
                                     <i class="fa-light fa-arrow-left-long"></i>
                                 </a>
                             </li>
                         @endif
 
                         {{-- PAGE NUMBERS --}}
-                        @foreach ($products->links()->elements[0] ?? [] as $page => $url)
-                            @if ($page == $products->currentPage())
+                        @foreach ($categories->links()->elements[0] ?? [] as $page => $url)
+                            @if ($page == $categories->currentPage())
                                 <li><span class="current">{{ $page }}</span></li>
                             @else
                                 <li><a href="{{ $url }}">{{ $page }}</a></li>
@@ -222,9 +212,9 @@
                         @endforeach
 
                         {{-- NEXT --}}
-                        @if ($products->hasMorePages())
+                        @if ($categories->hasMorePages())
                             <li>
-                                <a href="{{ $products->nextPageUrl() }}">
+                                <a href="{{ $categories->nextPageUrl() }}">
                                     <i class="fa-light fa-arrow-right-long"></i>
                                 </a>
                             </li>

@@ -127,11 +127,7 @@
                     <h2 class="tp-breadcrumb__title">{{ $about->title ?? 'About Us' }}</h2>
                 </div>
             </div>
-            <div class="col-xl-5">
-                <div class="tp-breadcrumb__link text-xl-end">
-                    <span><a href="{{ url('/') }}"> Home</a></span>
-                </div>
-            </div>
+         
         </div>
     </div>
 </section>

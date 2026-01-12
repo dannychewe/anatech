@@ -5,6 +5,7 @@
     <script src="https://cdn.tiny.cloud/1/vpxsz259t116jjroj9oad3attspm8p16452cnnhpvehznqoj/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             tinymce.init({
@@ -20,163 +21,222 @@
 
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="adminNavbar">
-  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-    <!-- Dashboard -->
-    <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
-         href="{{ route('admin.dashboard') }}">
-        Dashboard
-      </a>
-    </li>
-
-    <!-- Catalog -->
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle 
-            {{ request()->routeIs('admin.products.*') 
-            || request()->routeIs('admin.product_categories.*') 
-            || request()->routeIs('admin.services.*') 
-            ? 'active' : '' }}"
-          href="#" id="catalogDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Catalog
-        </a>
-
-        <ul class="dropdown-menu" aria-labelledby="catalogDropdown">
-
-            {{-- Products --}}
-            <li>
-                <a class="dropdown-item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
-                  href="{{ route('admin.products.index') }}">
-                    Products
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar__brand">
+                <a href="{{ route('admin.dashboard') }}" class="admin-brand">
+                    <img src="{{ asset('assets/img/logo/logo.png') }}" alt="Anatech Systems" style="height: 36px;">
                 </a>
-            </li>
+                <button class="btn admin-sidebar__toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#adminSidebarNav" aria-expanded="false" aria-controls="adminSidebarNav">
+                    Menu
+                </button>
+            </div>
 
-            {{-- Product Categories --}}
-            <li>
-                <a class="dropdown-item {{ request()->routeIs('admin.product_categories.*') ? 'active' : '' }}"
-                  href="{{ route('admin.product_categories.index') }}">
-                    Product Categories
-                </a>
-            </li>
+            <div class="collapse d-lg-block" id="adminSidebarNav">
+                <div class="admin-sidebar__section">
+                    <div class="admin-sidebar__label">Overview</div>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                       href="{{ route('admin.dashboard') }}">Dashboard</a>
+                </div>
 
-            {{-- Services --}}
-            <li>
-                <a class="dropdown-item {{ request()->routeIs('admin.services.*') ? 'active' : '' }}"
-                  href="{{ route('admin.services.index') }}">
-                    Services
-                </a>
-            </li>
+                <div class="admin-sidebar__section">
+                    <div class="admin-sidebar__label">Catalog</div>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
+                       href="{{ route('admin.products.index') }}">Products</a>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.product-categories.*') ? 'active' : '' }}"
+                       href="{{ route('admin.product-categories.index') }}">Product Categories</a>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}"
+                       href="{{ route('admin.services.index') }}">Services</a>
+                </div>
 
-        </ul>
-    </li>
+                <div class="admin-sidebar__section">
+                    <div class="admin-sidebar__label">Content</div>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}"
+                       href="{{ route('admin.blogs.index') }}">Blogs</a>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                       href="{{ route('admin.categories.index') }}">Categories</a>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}"
+                       href="{{ route('admin.tags.index') }}">Tags</a>
+                  
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}"
+                       href="{{ route('admin.testimonials.index') }}">Testimonials</a>
+                </div>
 
+                <div class="admin-sidebar__section">
+                    <div class="admin-sidebar__label">Bookings</div>
+                    
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}"
+                       href="{{ route('admin.bookings.index') }}">Bookings</a>
+                </div>
 
-    <!-- Content -->
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.tags.*') || request()->routeIs('admin.podcasts.*') || request()->routeIs('admin.testimonials.*') ? 'active' : '' }}"
-         href="#" id="contentDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Content
-      </a>
-      <ul class="dropdown-menu" aria-labelledby="contentDropdown">
-        <li><a class="dropdown-item {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}"
-               href="{{ route('admin.blogs.index') }}">Blogs</a></li>
-        <li><a class="dropdown-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
-               href="{{ route('admin.categories.index') }}">Categories</a></li>
-        <li><a class="dropdown-item {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}"
-               href="{{ route('admin.tags.index') }}">Tags</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <!-- <li><a class="dropdown-item {{ request()->routeIs('admin.podcasts.*') ? 'active' : '' }}"
-               href="{{ route('admin.podcasts.index') }}">Podcasts / Videos</a></li> -->
-        <li><a class="dropdown-item {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}"
-               href="{{ route('admin.testimonials.index') }}">Testimonials</a></li>
-      </ul>
-    </li>
+                <div class="admin-sidebar__section">
+                    <div class="admin-sidebar__label">Communications</div>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}"
+                       href="{{ route('admin.contacts.index') }}">Contact Messages</a>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}"
+                       href="{{ route('admin.newsletter.index') }}">Newsletter Subscribers</a>
+                    <a class="admin-sidebar__link" href="{{ route('admin.newsletter.campaigns.create') }}">New Campaign</a>
+                </div>
 
-    <!-- Events & Bookings -->
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.events.*') || request()->routeIs('admin.bookings.*') ? 'active' : '' }}"
-         href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Bookings
-      </a>
-      <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
-        <!-- <li><a class="dropdown-item {{ request()->routeIs('admin.events.*') ? 'active' : '' }}"
-               href="{{ route('admin.events.index') }}">Events</a></li> -->
-        <li><a class="dropdown-item {{ request()->routeIs('admin.bookings.index') ? 'active' : '' }}"
-               href="{{ route('admin.bookings.index') }}">Bookings</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="{{ route('admin.bookings.export.csv') }}">Export Bookings (CSV)</a></li>
-        <li><a class="dropdown-item" href="{{ route('admin.bookings.export.pdf') }}">Export Bookings (PDF)</a></li>
-      </ul>
-    </li>
+                <div class="admin-sidebar__section">
+                    <div class="admin-sidebar__label">Site Setup</div>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.hero.index') ? 'active' : '' }}"
+                       href="{{ route('admin.hero.index') }}">Homepage Hero</a>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}"
+                       href="{{ route('admin.brands.index') }}">Brands</a>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.about.index') ? 'active' : '' }}"
+                       href="{{ route('admin.about.index') }}">About Us</a>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.footer.index') ? 'active' : '' }}"
+                       href="{{ route('admin.footer.index') }}">Footer</a>
+                </div>
 
-    <!-- Communications -->
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.contacts.*') || request()->routeIs('admin.newsletter.*') ? 'active' : '' }}"
-         href="#" id="commsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Communications
-      </a>
-      <ul class="dropdown-menu" aria-labelledby="commsDropdown">
-        <li><a class="dropdown-item {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}"
-               href="{{ route('admin.contacts.index') }}">Contact Messages</a></li>
-        <li><a class="dropdown-item {{ request()->routeIs('admin.newsletter.index') ? 'active' : '' }}"
-               href="{{ route('admin.newsletter.index') }}">Newsletter Subscribers</a></li>
-        <!-- <li><a class="dropdown-item" href="{{ route('admin.newsletter.campaigns.create') }}">New Campaign</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="{{ route('admin.newsletter.export.csv') }}">Export Subscribers (CSV)</a></li>
-        <li><a class="dropdown-item" href="{{ route('admin.newsletter.export.pdf') }}">Export Subscribers (PDF)</a></li> -->
-      </ul>
-    </li>
+                <div class="admin-sidebar__section">
+                    <div class="admin-sidebar__label">People</div>
+                    <a class="admin-sidebar__link {{ request()->routeIs('admin.team-members.*') ? 'active' : '' }}"
+                       href="{{ route('admin.team-members.index') }}">Team</a>
+                </div>
 
-    <!-- Site Setup -->
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.hero.index') || request()->routeIs('admin.about.index') || request()->routeIs('admin.footer.index') ? 'active' : '' }}"
-         href="#" id="siteDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Site Setup
-      </a>
-      <ul class="dropdown-menu" aria-labelledby="siteDropdown">
-        <li><a class="dropdown-item {{ request()->routeIs('admin.hero.index') ? 'active' : '' }}"
-               href="{{ route('admin.hero.index') }}">Homepage Hero</a></li>
-        <li><a class="dropdown-item {{ request()->routeIs('admin.about.index') ? 'active' : '' }}"
-               href="{{ route('admin.about.index') }}">About Us</a></li>
-        <li><a class="dropdown-item {{ request()->routeIs('admin.footer.index') ? 'active' : '' }}"
-               href="{{ route('admin.footer.index') }}">Footer</a></li>
-      </ul>
-    </li>
+                <form action="{{ route('logout') }}" method="POST" class="admin-sidebar__logout">
+                    @csrf
+                    <button type="submit" class="btn btn-sm admin-logout w-100">Logout</button>
+                </form>
+            </div>
+        </aside>
 
-    <!-- People -->
-    <!-- <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.team-members.*') ? 'active' : '' }}"
-         href="#" id="peopleDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        People
-      </a>
-      <ul class="dropdown-menu" aria-labelledby="peopleDropdown">
-        <li><a class="dropdown-item {{ request()->routeIs('admin.team-members.*') ? 'active' : '' }}"
-               href="{{ route('admin.team-members.index') }}">Team</a></li>
-      </ul>
-    </li> -->
-
-  </ul>
-
-  <form action="{{ route('logout') }}" method="POST" class="d-flex">
-    @csrf
-    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-  </form>
-</div>
-
+        <div class="admin-content">
+            <div class="container-fluid">
+                @yield('content')
+            </div>
         </div>
-    </nav>
-
-    <div class="container">
-        @yield('content')
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var fileInputs = document.querySelectorAll('.admin-content input[type="file"].form-control');
+
+            fileInputs.forEach(function (input) {
+                if (input.closest('.admin-dropzone')) {
+                    return;
+                }
+
+                var wrapper = document.createElement('div');
+                wrapper.className = 'admin-dropzone';
+
+                var prompt = document.createElement('div');
+                prompt.className = 'admin-dropzone__prompt';
+                prompt.textContent = 'Drag and drop files here or click to upload';
+
+                var hint = document.createElement('div');
+                hint.className = 'admin-dropzone__hint';
+                hint.textContent = 'Supported: JPG, PNG, GIF, WEBP';
+
+                var clearButton = document.createElement('button');
+                clearButton.type = 'button';
+                clearButton.className = 'btn btn-sm btn-outline-secondary admin-dropzone__clear';
+                clearButton.textContent = 'Clear selection';
+
+                var preview = document.createElement('div');
+                preview.className = 'admin-dropzone__preview';
+
+                input.parentNode.insertBefore(wrapper, input);
+                wrapper.appendChild(prompt);
+                wrapper.appendChild(hint);
+                wrapper.appendChild(clearButton);
+                wrapper.appendChild(input);
+                wrapper.appendChild(preview);
+
+                var existingImages = (input.dataset.existingImages || '')
+                    .split(',')
+                    .map(function (item) { return item.trim(); })
+                    .filter(Boolean);
+
+                var addPreviewItem = function (options) {
+                    var item = document.createElement('div');
+                    item.className = 'admin-dropzone__item';
+                    if (options.type === 'existing') {
+                        item.classList.add('admin-dropzone__item--existing');
+                    } else {
+                        item.classList.add('admin-dropzone__item--selected');
+                    }
+
+                    if (options.kind === 'image') {
+                        var img = document.createElement('img');
+                        img.src = options.src;
+                        item.appendChild(img);
+                    } else {
+                        var fileBox = document.createElement('div');
+                        fileBox.className = 'admin-dropzone__file';
+                        fileBox.textContent = options.name;
+                        item.appendChild(fileBox);
+                    }
+
+                    preview.appendChild(item);
+                };
+
+                if (existingImages.length) {
+                    existingImages.forEach(function (url) {
+                        addPreviewItem({ type: 'existing', kind: 'image', src: url });
+                    });
+                }
+
+                var stopDefaults = function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                };
+
+                ['dragenter', 'dragover'].forEach(function (evt) {
+                    wrapper.addEventListener(evt, function (event) {
+                        stopDefaults(event);
+                        wrapper.classList.add('is-dragover');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(function (evt) {
+                    wrapper.addEventListener(evt, function (event) {
+                        stopDefaults(event);
+                        wrapper.classList.remove('is-dragover');
+                    });
+                });
+
+                wrapper.addEventListener('drop', function (event) {
+                    if (event.dataTransfer && event.dataTransfer.files) {
+                        input.files = event.dataTransfer.files;
+                        input.dispatchEvent(new Event('change'));
+                    }
+                });
+
+                clearButton.addEventListener('click', function () {
+                    input.value = '';
+                    preview.querySelectorAll('.admin-dropzone__item--selected').forEach(function (item) {
+                        item.remove();
+                    });
+                });
+
+                input.addEventListener('change', function () {
+                    preview.querySelectorAll('.admin-dropzone__item--selected').forEach(function (item) {
+                        item.remove();
+                    });
+                    var files = Array.prototype.slice.call(input.files || []);
+                    if (!files.length) {
+                        return;
+                    }
+
+                    files.slice(0, 8).forEach(function (file) {
+                        if (file.type && file.type.indexOf('image/') === 0) {
+                            var url = URL.createObjectURL(file);
+                            addPreviewItem({ type: 'selected', kind: 'image', src: url });
+                            var lastImg = preview.lastElementChild ? preview.lastElementChild.querySelector('img') : null;
+                            if (lastImg) {
+                                lastImg.onload = function () { URL.revokeObjectURL(url); };
+                            }
+                        } else {
+                            addPreviewItem({ type: 'selected', kind: 'file', name: file.name });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>

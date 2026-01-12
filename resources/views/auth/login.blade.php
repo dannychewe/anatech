@@ -1,150 +1,121 @@
 <x-guest-layout>
+    <style>
+        .auth-title {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #0f172a;
+            margin: 0;
+        }
+        .auth-subtitle {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .auth-field {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 14px;
+            outline: none;
+        }
+        .auth-field:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        .auth-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 13px;
+        }
+        .auth-link {
+            color: #0f766e;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-link:hover {
+            color: #115e59;
+        }
+        .auth-button {
+            width: 100%;
+            border: none;
+            border-radius: 999px;
+            padding: 12px 16px;
+            background: #0f766e;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .auth-button:hover {
+            background: #115e59;
+        }
+        .auth-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .auth-hint {
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 16px;
+        }
+        .auth-remember {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #64748b;
+        }
+    </style>
 
-<style>
-    body {
-        background: #f5f7fb;
-        font-family: 'Inter', sans-serif;
-    }
+    <h2 class="auth-title">Welcome back</h2>
+    <p class="auth-subtitle">Sign in to manage the Matcon admin dashboard.</p>
 
-    .login-card {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 28px 32px;
-        max-width: 380px;
-        margin: 0 auto;
-        box-shadow: 0 4px 18px rgba(0,0,0,0.06);
-    }
+    <!-- Session Status -->
+    <x-auth-session-status class="mt-4" :status="session('status')" />
 
-    .login-title {
-        font-size: 22px;
-        font-weight: 600;
-        color: #111827;
-    }
+    <form method="POST" action="{{ route('login') }}" style="margin-top: 24px;">
+        @csrf
 
-    .login-sub {
-        font-size: 14px;
-        color: #6b7280;
-        margin-top: 4px;
-    }
+        <!-- Email Address -->
+        <div style="margin-bottom: 16px;">
+            <x-input-label for="email" :value="__('Email')" class="auth-label" />
+            <x-text-input id="email" class="auth-field" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
 
-    .login-input {
-        border-radius: 8px;
-        border: 1px solid #d1d5db;
-        padding: 10px 12px;
-        width: 100%;
-        background: #fff;
-        transition: border 0.2s ease;
-        font-size: 14px;
-    }
+        <!-- Password -->
+        <div style="margin-bottom: 16px;">
+            <x-input-label for="password" :value="__('Password')" class="auth-label" />
+            <x-text-input id="password" class="auth-field" type="password" name="password" required autocomplete="current-password" />
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        </div>
 
-    .login-input:focus {
-        outline: none;
-        border-color: #0e63ff;
-    }
+        <!-- Remember Me -->
+        <div class="auth-row">
+            <label for="remember_me" class="auth-remember">
+                <input id="remember_me" type="checkbox" name="remember">
+                <span>{{ __('Remember me') }}</span>
+            </label>
+            @if (Route::has('password.request'))
+                <a class="auth-link" href="{{ route('password.request') }}">
+                    {{ __('Forgot password?') }}
+                </a>
+            @endif
+        </div>
 
-    .submit-btn {
-        background: #0e63ff;
-        color: white;
-        border-radius: 8px;
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-        font-weight: 500;
-        transition: 0.2s ease;
-    }
+        <div style="margin-top: 20px;">
+            <x-primary-button class="auth-button">
+                {{ __('Log in') }}
+            </x-primary-button>
+        </div>
 
-    .submit-btn:hover {
-        background: #0b54d4;
-    }
-
-    .brand-logo {
-        height: 60px;
-        margin-bottom: 15px;
-    }
-
-    .forgot-link,
-    .register-link {
-        color: #0e63ff;
-        font-size: 13px;
-        text-decoration: none;
-    }
-
-    .forgot-link:hover,
-    .register-link:hover {
-        text-decoration: underline;
-    }
-</style>
-
-
-<div class="min-h-screen flex flex-col justify-center px-4">
-
-    
-
-    <!-- LOGIN CARD -->
-    <div class="login-card">
-        <!-- Header Logo + Title -->
-    <div class="text-center mb-6">
-        <img src="{{ asset('assets/img/logo/logo.png') }}" class="brand-logo mx-auto" alt="Logo">
-        <h1 class="login-title">Sign in to your account</h1>
-        <p class="login-sub">Access the Anatech admin dashboard</p>
-    </div>
-
-        <!-- Session messages -->
-        <x-auth-session-status class="mb-3 text-sm text-green-600" :status="session('status')" />
-
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-
-            <!-- Email -->
-            <div class="mb-4">
-                <x-input-label for="email" value="Email" class="text-sm font-medium text-gray-700" />
-                <input id="email"
-                       type="email"
-                       name="email"
-                       class="login-input mt-1"
-                       value="{{ old('email') }}"
-                       required autofocus>
-                <x-input-error :messages="$errors->get('email')" class="mt-1 text-red-500 text-sm" />
-            </div>
-
-            <!-- Password -->
-            <div class="mb-4">
-                <x-input-label for="password" value="Password" class="text-sm font-medium text-gray-700" />
-                <input id="password"
-                       type="password"
-                       name="password"
-                       class="login-input mt-1"
-                       required>
-                <x-input-error :messages="$errors->get('password')" class="mt-1 text-red-500 text-sm" />
-            </div>
-
-            <!-- Remember & Forgot -->
-            <div class="flex items-center justify-between mb-4">
-                <label class="flex items-center text-gray-700 text-sm">
-                    <input type="checkbox" name="remember"
-                           class="rounded border-gray-300 mr-2">
-                    Remember me
-                </label>
-
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="forgot-link">
-                        Forgot password?
-                    </a>
-                @endif
-            </div>
-
-            <!-- Submit -->
-            <button class="submit-btn">Log in</button>
-
-        </form>
-    </div>
-
-    <!-- Footer -->
-    <p class="text-center text-gray-500 text-sm mt-6">
-        © {{ date('Y') }} Analytical Technologies Zambia Ltd.
-    </p>
-
-</div>
-
+        <p class="auth-hint">
+            Need help? <a href="{{ url('/contact-us') }}" class="auth-link">Contact support</a>
+        </p>
+    </form>
 </x-guest-layout>

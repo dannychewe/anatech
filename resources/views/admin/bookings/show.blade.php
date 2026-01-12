@@ -13,6 +13,8 @@
             <p><strong>Quantity:</strong> {{ $booking->quantity }}</p>
             <p><strong>Start Date:</strong> {{ $booking->start_date }}</p>
             <p><strong>End Date:</strong> {{ $booking->end_date }}</p>
+            <p><strong>Price Per Unit:</strong> {{ $booking->currency ?? 'USD' }} {{ number_format((float) $booking->price_per_unit, 2) }}</p>
+            <p><strong>Total:</strong> {{ $booking->currency ?? 'USD' }} {{ number_format((float) $booking->total_price, 2) }}</p>
             <p><strong>Notes:</strong> {{ $booking->notes ?? 'None' }}</p>
             <p><strong>Status:</strong> 
                 <span class="badge bg-info">{{ $booking->status }}</span>

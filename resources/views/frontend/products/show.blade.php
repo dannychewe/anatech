@@ -13,9 +13,15 @@
   // Default currency for Zambia
   $currency = 'ZMW';
 
-  // 155–160 chars SEO summary
+  // 155-160 chars SEO summary
   $shortDesc = $product->meta_description
       ?? \Illuminate\Support\Str::limit(strip_tags($product->description ?? ''), 155);
+
+  $galleryImages = collect([$img])
+      ->merge($product->images->map(fn ($image) => asset('storage/'.$image->path)))
+      ->filter()
+      ->unique()
+      ->values();
 @endphp
 
 
@@ -124,11 +130,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-5 col-lg-12 col-md-12 col-12">
-                <div class="tp-breadcrumb__link text-xl-end">
-                    <span><a href="{{ route('products.index') }}"> Products</a></span>
-                </div>
-            </div>
+            
 
         </div>
     </div>
@@ -141,75 +143,59 @@
     <div class="container">
         <div class="shop-left-right ml-130 mr-130">
 
-            <div class="row">
+            <div class="row gx-5 gy-5 align-items-center">
 
                 {{-- LEFT: PRODUCT IMAGE --}}
                 <div class="col-lg-6 col-md-6">
-                    <div class="productthumb mb-40 wow fadeInRighLeft" data-wow-delay=".4s">
-                        <img 
-                            src="{{ $product->image ? asset('storage/'.$product->image) : asset('assets/img/shop/product-placeholder.jpg') }}" 
-                            alt="{{ $product->name }}">
+                    <div class="productthumb mb-40 wow fadeInLeft product-detail-card--alt" data-wow-delay=".4s">
+                        <div class="product-gallery">
+                            <div class="product-gallery__main">
+                                <img
+                                    id="product-main-image"
+                                    src="{{ $galleryImages->first() }}"
+                                    alt="{{ $product->name }}">
+                            </div>
+                            @if($galleryImages->count() > 1)
+                                <div class="product-gallery__thumbs">
+                                    @foreach($galleryImages as $key => $source)
+                                        <button type="button"
+                                                class="product-gallery__thumb {{ $key === 0 ? 'active' : '' }}"
+                                                data-image="{{ $source }}"
+                                                aria-label="Preview {{ $key + 1 }}">
+                                            <img src="{{ $source }}" alt="{{ $product->name }} thumbnail {{ $key + 1 }}">
+                                        </button>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
                 {{-- RIGHT: PRODUCT DETAILS --}}
                 <div class="col-lg-6 col-md-6">
-                    <div class="product mb-40 ml-20 wow fadeInRighRight" data-wow-delay=".4s">
-                        <div class="product__details-content mb-40">
-
-                            <h5 class="product-dtitle mb-20">{{ $product->name }}</h5>
-
-                            {{-- SHORT DESCRIPTION OR FIRST 200 CHARACTERS --}}
-                            <p>{!! Str::limit(strip_tags($product->description), 200) !!}</p>
-
-                            <!-- {{-- RATING STATIC --}}
-                            <div class="product-dinfo mt-25">
-                                <div class="product-rating">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-light fa-star"></i>
-                                    <i class="fa-light fa-star"></i>
-                                </div>
-                                <span class="review-count">(4 customer reviews)</span>
-                            </div> -->
-
-                            {{-- PRICE --}}
-                            <h5 class="product-dprice mt-30">
+                    <div class="product-detail-card wow fadeInRight" data-wow-delay=".4s">
+                        <span class="product-detail-card__badge">
+                            {{ optional($product->category)->name ?? 'Featured Product' }}
+                        </span>
+                        <h3 class="product-detail-card__title">{{ $product->name }}</h3>
+                        <div class="product-detail-card__meta">
+                            <span>
+                                Price:
                                 @if($product->price)
-                                    ${{ number_format($product->price, 2) }}
+                                    ZMW {{ number_format($product->price, 2) }}
                                 @else
-                                    <span class="text-muted">Price on request</span>
+                                    On request
                                 @endif
-                            </h5>
-
-                            <!-- {{-- QUANTITY FIELD (frontend only, just display) --}}
-                            <h6 class="product-model-title mt-30 mb-15">Quantity</h6>
-                            <div class="pro-quan-area d-sm-flex align-items-center mb-15">
-                                <div class="product-quantity-title mr-25">
-                                    <label>Quantity</label>
-                                </div>
-                                <div class="tp-product-quantity mt-10 mb-10">
-                                    <span class="cart-minus"><i class="fa-solid fa-arrow-left"></i></span>
-                                    <input class="tp-cart-input" type="text" value="1"/>
-                                    <span class="cart-plus"><i class="fa-solid fa-arrow-right"></i></span>
-                                </div>
-                            </div> -->
-
-                            {{-- BUTTONS --}}
-                            <div class="product-button">
-
-                                {{-- ORDER BUTTON --}}
-                                <a href="#order-section" class="tp-btn mr-20">
-                                    Enquiry
-                                </a>
-
-                                {{-- OPTIONAL ADD TO CART (can be removed) --}}
-                                <!-- <a href="#" class="tp-btn-second">Enquiry</a> -->
-
-                            </div>
-
+                            </span>
+                            <span>SKU: {{ $product->sku ?? '—' }}</span>
                         </div>
+                        <div class="product-detail-card__actions">
+                            <a href="#order-section" class="tp-btn">Enquiry</a>
+                            <a href="{{ url('/contact-us') }}" class="tp-btn-second">Contact Anatech</a>
+                        </div>
+                        <p class="product-detail-card__summary">
+                            {{ \Illuminate\Support\Str::limit(strip_tags($product->description ?? ''), 220) }}
+                        </p>
                     </div>
                 </div>
 
@@ -300,5 +286,25 @@
     </div>
 </section>
 <!-- shop-details-area-end -->
+@include('frontend.partials.product-card-styles')
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const mainImage = document.getElementById('product-main-image');
+    if (!mainImage) return;
+    const thumbs = document.querySelectorAll('.product-gallery__thumb');
+    thumbs.forEach((thumb) => {
+        thumb.addEventListener('click', function () {
+            const src = this.dataset.image;
+            if (!src) return;
+            mainImage.src = src;
+            thumbs.forEach((btn) => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+});
+</script>
+@endpush
 
 @endsection

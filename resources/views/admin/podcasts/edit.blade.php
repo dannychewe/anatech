@@ -14,6 +14,10 @@
         @csrf
         @method('PUT')
 
+        @php
+            $thumbnail = $podcast->thumbnail ? asset('storage/'.$podcast->thumbnail) : '';
+        @endphp
+
         <div class="mb-3">
             <label class="form-label">Title</label>
             <input type="text" name="title" class="form-control" value="{{ old('title', $podcast->title) }}" required>
@@ -31,12 +35,7 @@
 
         <div class="mb-3">
             <label class="form-label">Thumbnail</label>
-            <input type="file" name="thumbnail" class="form-control">
-            @if($podcast->thumbnail)
-                <p class="mt-2">
-                    <img src="{{ asset('storage/'.$podcast->thumbnail) }}" alt="Thumbnail" width="120">
-                </p>
-            @endif
+            <input type="file" name="thumbnail" class="form-control" data-existing-images="{{ $thumbnail }}">
         </div>
 
         <div class="mb-3">

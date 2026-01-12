@@ -12,6 +12,10 @@
         @csrf
         @method('PUT')
 
+        @php
+            $aboutImage = !empty($about->image) ? asset('storage/'.$about->image) : '';
+        @endphp
+
         {{-- Title --}}
         <div class="mb-3">
             <label class="form-label">Title</label>
@@ -21,12 +25,7 @@
         {{-- Image --}}
         <div class="mb-3">
             <label class="form-label">Image</label>
-            <input type="file" name="image" class="form-control">
-            @if(!empty($about->image))
-                <p class="mt-2">
-                    <img src="{{ asset('storage/'.$about->image) }}" alt="About Image" width="150">
-                </p>
-            @endif
+            <input type="file" name="image" class="form-control" data-existing-images="{{ $aboutImage }}">
         </div>
 
         {{-- Content --}}

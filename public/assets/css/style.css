@@ -39,15 +39,19 @@
 /*----------------------------------------*/
 /*  01. THEME DEFAULT CSS START
 /*----------------------------------------*/
-@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Days+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 :root {
   /**
   @font family declaration
   */
-  --tp-ff-body: 'Archivo', sans-serif;
-  --tp-ff-heading: 'Days One', sans-serif;
-  --tp-ff-p: 'Archivo', sans-serif;
+  --tp-ff-body: 'Poppins', sans-serif;
+  --tp-ff-heading: 'Poppins', sans-serif;
+  --tp-ff-p: 'Poppins', sans-serif;
   --tp-ff-fontawesome: "Font Awesome 6 Pro";
+  /**
+  @font weight declaration
+  */
+  --tp-fw-sbold: 600;
   /**
   @color declaration
   */

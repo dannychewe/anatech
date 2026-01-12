@@ -10,6 +10,7 @@
             <p><strong>Phone:</strong> {{ $contact->phone ?? '-' }}</p>
             <p><strong>Organization:</strong> {{ $contact->organization ?? '-' }}</p>
             <p><strong>Subject:</strong> {{ $contact->subject ?? '-' }}</p>
+            <p><strong>Received:</strong> {{ $contact->created_at->format('M d, Y H:i') }}</p>
             <p><strong>Message:</strong></p>
             <p>{{ $contact->message }}</p>
         </div>

@@ -44,6 +44,8 @@
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
 
+@stack('styles')
+
 <body>
 
 <!-- Scroll-top -->

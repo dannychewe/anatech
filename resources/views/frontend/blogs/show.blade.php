@@ -122,11 +122,11 @@
                     <h2 class="tp-breadcrumb__title">Blog Details</h2>
                 </div>
             </div>
-            <div class="col-xl-6 col-lg-5 col-md-5">
+            <!-- <div class="col-xl-6 col-lg-5 col-md-5">
                 <div class="tp-breadcrumb__link d-flex align-items-center">
                     <span>Home : <a href="{{ route('blogs.index') }}"> Blogs</a></span>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </section>

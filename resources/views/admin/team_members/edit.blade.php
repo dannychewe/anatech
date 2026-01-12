@@ -8,6 +8,10 @@
         @csrf
         @method('PUT')
 
+        @php
+            $photo = $team_member->photo ? asset('storage/'.$team_member->photo) : '';
+        @endphp
+
         <div class="mb-3">
             <label class="form-label">Name</label>
             <input type="text" name="name" value="{{ old('name', $team_member->name) }}" class="form-control" required>
@@ -21,12 +25,7 @@
 
         <div class="mb-3">
             <label class="form-label">Photo</label>
-            <input type="file" name="photo" class="form-control">
-            @if($team_member->photo)
-                <p class="mt-2">
-                    <img src="{{ asset('storage/'.$team_member->photo) }}" alt="Photo" width="150" class="rounded">
-                </p>
-            @endif
+            <input type="file" name="photo" class="form-control" data-existing-images="{{ $photo }}">
             @error('photo') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 

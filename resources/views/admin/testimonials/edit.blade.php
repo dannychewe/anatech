@@ -8,6 +8,10 @@
         @csrf
         @method('PUT')
 
+        @php
+            $authorPhoto = $testimonial->author_photo ? asset('storage/'.$testimonial->author_photo) : '';
+        @endphp
+
         <div class="mb-3">
             <label class="form-label">Author Name</label>
             <input type="text" name="author_name" value="{{ old('author_name', $testimonial->author_name) }}" class="form-control" required>
@@ -21,12 +25,7 @@
 
         <div class="mb-3">
             <label class="form-label">Author Photo</label>
-            <input type="file" name="author_photo" class="form-control">
-            @if($testimonial->author_photo)
-                <p class="mt-2">
-                    <img src="{{ asset('storage/'.$testimonial->author_photo) }}" alt="Photo" width="100" class="rounded-circle">
-                </p>
-            @endif
+            <input type="file" name="author_photo" class="form-control" data-existing-images="{{ $authorPhoto }}">
             @error('author_photo') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
