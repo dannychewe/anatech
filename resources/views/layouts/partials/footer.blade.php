@@ -161,11 +161,7 @@
 
                <div class="col-xl-6 col-lg-6 col-md-12 col-12">
                   <div class="footer-widget__copyright-info info-direction">
-                     <ul class="d-flex align-items-center justify-content-lg-end flex-wrap">
-                        <li><a href="#">Terms & Conditions</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Support</a></li>
-                     </ul>
+                     
                   </div>
                </div>
 
